@@ -1,0 +1,23 @@
+[
+	{
+		"email": "donpaquito@gmail.com",
+		"password": "Paquito1.",
+		"productName": "ZARA COAT 3",
+		"countryLetters":"por",
+		"countryName": "portugal"
+	},
+	{
+			"email": "donpaquito@gmail.com",
+			"password": "Paquito1.",
+			"productName": "IPHONE 13 PRO",
+			"countryLetters":"ven",
+			"countryName": "venezuela"
+	},
+	{
+			"email": "donpaquito@gmail.com",
+			"password": "Paquito1.",
+			"productName": "ADIDAS ORIGINAL",
+			"countryLetters":"ind",
+			"countryName": "india"
+	}
+]

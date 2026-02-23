@@ -1,0 +1,12 @@
+# MAVEN
+target/
+
+# REPORTES
+test-output/
+reports/
+
+# LOGS
+*.log
+
+# ARCHIVOS TEMPORALES
+*.tmp
