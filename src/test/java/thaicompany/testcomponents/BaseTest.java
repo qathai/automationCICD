@@ -83,7 +83,7 @@ public class BaseTest {
 		if (!browserName.contains("headless")) {
 		    driver.manage().window().maximize(); // MAXIMIZAR LA VENTANA CUANDO NO ES MODO HEADLESS PARA EVITAR PROBLEMAS DE RESPONSIVE DESIGN
 		}
-		
+		System.out.println("HOLA CI/CD");
 		return driver;
 	}
 	

@@ -1,8 +1,0 @@
-thaicompany\pageobjects\ConfirmationPage.class
-thaicompany\resources\ExtentReporterNG.class
-thaicompany\pageobjects\CartPage.class
-thaicompany\abstractcomponents\AbstractComponent.class
-thaicompany\pageobjects\OrderPage.class
-thaicompany\pageobjects\CheckOutPage.class
-thaicompany\pageobjects\LandingPage.class
-thaicompany\pageobjects\ProductCatalogue.class
