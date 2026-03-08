@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import org.testng.Assert;
 
+import io.cucumber.java.After;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
@@ -11,22 +12,28 @@ import io.cucumber.java.en.When;
 import thaicompany.pageobjects.CartPage;
 import thaicompany.pageobjects.CheckOutPage;
 import thaicompany.pageobjects.ConfirmationPage;
-import thaicompany.pageobjects.LandingPage;
 import thaicompany.pageobjects.ProductCatalogue;
 import thaicompany.testcomponents.BaseTest;
 
 public class StepDefinitionsImp extends BaseTest{
 	// VARIABLES DE LA CLASE, ESTAN VIVAS EN TODA ESTA CLASE PARA USARSE EN TODOS LOS MÉTODOS
-	LandingPage landingPage; 
 	ProductCatalogue productCatalogue;
 	CartPage cartPage;
 	CheckOutPage checkOutPage;
 	ConfirmationPage confirmationPage;
 	
+	@After
+	public void closeDriver() {
+		if (driver != null) {
+			driver.close(); // CIERRA EL NAVEGADOR AL FINALIZAR EL SCENARIO
+		}
+		
+	}
 	
 	@Given("I landed on ecommerce page")
 	public void I_landed_on_ecommerce_page() throws IOException {
-		landingPage = launchApplication(); // INICIALIZA EL DRIVER, INVOCA "goTo", DEVUELVE "landingPage"
+		prepareEcommerceTest(); // INICIALIZA EL DRIVER Y "landingPage"
+		landingPage.goTo();
 	}
 	
 	@Given ("^Logged in with username (.+) and password (.+)$") // SIMBOLO "^" AL INICIO Y "$" AL FIN INDICA QUE ES UNA EXPRESIÓN REGULAR															// LA VARIABLE SE SUSTITUYE CON (.+)

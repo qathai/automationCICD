@@ -46,6 +46,10 @@ public class AbstractComponent {
 		
 	}
 	
+	public void waitForElementToDesappearByLocator(By finBy) {
+		w.until(ExpectedConditions.invisibilityOfElementLocated(finBy));
+	}
+	
 	public void waitForVisibilityOfAllWebElement(List<WebElement> elem) {
 		// ESPERA A QUE UN SOLO ELEMENTO SEA VISIBLE
 		w.until(ExpectedConditions.visibilityOfAllElements(elem));

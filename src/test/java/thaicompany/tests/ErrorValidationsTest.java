@@ -6,6 +6,7 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import thaicompany.pageobjects.CartPage;
+import thaicompany.pageobjects.LandingPage;
 import thaicompany.pageobjects.ProductCatalogue;
 import thaicompany.testcomponents.BaseTest;
 import thaicompany.testcomponents.Retry;
@@ -22,6 +23,8 @@ public class ErrorValidationsTest extends BaseTest{
 		// PODEMOS USAR "landingPage" PARA INVOCAR EL "loginApplication" PORQUE EN EL "BaseTest" CREAMOS EL MÉTODO "launchApplication" QUE MARCAMOS COMO @BeforeMethod QUE RETORNA "landingPage"
 		// CON "landingPage" INVOCAMOS EL MÉTODO "loginApplication"
 		// "loginApplication" DEVUELVE EL OBJETO "productCatalogue" POR ESO HACEMOS LA SIGNACIÓN, ASI NO TENEMOS QUE CREAR UN OBJETO DE LA CLASE AQUI
+		
+		LandingPage landingPage = launchApplication();
 		landingPage.loginApplication(email, password);
 		String errorText = landingPage.getErrorMessage();
 		Assert.assertTrue(errorText.equalsIgnoreCase("Incorrect email or password."));
@@ -37,6 +40,7 @@ public class ErrorValidationsTest extends BaseTest{
 		// INICIAMOS SESIÓN USANDO EL MÉTODO "loginApplication" DEL OBJETO "landingPage"
 		// ESTE MÉTODO RETORNA EL OBJETO "ProductCatalogue" PARA PODER CONTINUAR CON EL FLUJO, 
 		// POR ESO HACEMOS LA SIGNACIÓN, ASI NO TENEMOS QUE CREAR UN OBJETO DE LA CLASE AQUI
+		LandingPage landingPage = launchApplication();
 		ProductCatalogue productCatalogue = landingPage.loginApplication("donpaquito@gmail.com", "Paquito1.");
 		
 		// AGREGAMOS AL CARRITO EL PRODUCTO ESPECÍFICO QUE QUEREMOS COMPRAR

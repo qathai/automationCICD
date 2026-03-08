@@ -9,7 +9,7 @@ import io.cucumber.testng.CucumberOptions;
 		glue = "thaicompany.stepdefinitions", // PAQUETE DONDE ESTÁN LOS STEP DEFINITIONS
 		monochrome = true, // HACE QUE LOS RESULTADOS EN CONSOLA SEAN MÁS LEGIBLES
 		plugin = {"pretty", "html:target/cucumber.html"}, // SALIDA LEGIBLE EN CONSOLA Y REPORTE HTML EN LA CARPETA TARGET
-		tags = "@ErrorValidation") // EJECUTARÁ SOLO FEATURES CON ESE TAG
+		tags = "@ExcelValidation") // EJECUTARÁ SOLO FEATURES CON ESE TAG
 
 public class TestNGTestRunner extends AbstractTestNGCucumberTests{
 	// ESTA CLASE NO NECESITA MÉTODOS

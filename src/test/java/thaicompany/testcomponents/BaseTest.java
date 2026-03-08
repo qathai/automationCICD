@@ -7,6 +7,7 @@ import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import org.apache.commons.io.FileUtils;
@@ -24,7 +25,9 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
+import thaicompany.data.ExcelUtils;
 import thaicompany.pageobjects.LandingPage;
+import thaicompany.pageobjects.UploadPage;
 
 public class BaseTest {
 	
@@ -32,16 +35,22 @@ public class BaseTest {
 	 * COMO POR EJEMPLO DECLARAR EL DRIVER Y NAVEGAR HASTA LA URL DE LA APLICACIÓN, EL OBJETIVO DE ESTO ES EVITAR REPETIR PASOS 
 	 * EN CADA PRUEBA Y DEJAR LOS CASOS DE PRUEBA LO MAS ENFOCADOS A LA PRUEBA REAL*/
 	
-	public WebDriver driver; // ESTA VARIABLE GLOBAL ME SIRVE PARA QUE CUALQUIER DRIVER QUE YO CREE EN ESTA CLASE TENGA ACCESO A ESTA VARIABLE
-	public LandingPage landingPage; // VARIABLE GLOBAL PARA QUE CUALQUIER CLASE HIJA PUEDA ACCEDER A ELLA Y CUALQUIER MÉTODO DE ESTA CLASE TAMBIEN
+	public WebDriver driver; // VARIABLE GLOBAL PARA USAR EL DRIVER EN TODA LA CLASE Y EN CLASES HIJAS
+	public LandingPage landingPage; // VARIABLE GLOBAL PARA ACCEDER AL PAGE OBJECT DESDE CLASES HIJAS
+	public String downloadPath = "C:\\Users\\Thainays\\Documents\\Curso Selenium Webdriver Java\\test-download-upload"; // VARIEBLE DE CLASE PARA RUTA DE DESCARGA
+	public ExcelUtils excelUtils; // VARIABLE GLOBAL PARA USAR LOS METODOS DE EXCEL EN CLASES HIJAS
+	public UploadPage uploadPage; // VARIABLE GLOBAL PARA ACCEDER AL PAGE OBJECT DE UPLOAD
 	
 	public WebDriver initializeDriver() throws IOException {
 		// CONFIGURACION DEL DRIVER
 		
-		// PROPERTIES CLASS - NECESITO MAS EXPLICACIÓN PARA ESTA PARTE Y PARA MIS APUNTES
+		// CREAR OBJETO PROPERTIES PARA LEER CONFIGURACIONES DEL ARCHIVO .PROPERTIES
 		Properties prop = new Properties();
+		// ABRIR EL ARCHIVO DE CONFIGURACIÓN DESDE EL PROYECTO
 		FileInputStream fis = new FileInputStream(System.getProperty("user.dir")+"//src//main//java//thaicompany//resources//GlobalData.properties");
-		prop.load(fis);
+		prop.load(fis); // CARGAR LAS PROPIEDADES DEL ARCHIVO EN MEMORIA
+		fis.close(); // CERRAR EL FLUJO DE ENTRADA YA QUE EL ARCHIVO YA FUE LEIDO
+		
 		// PARA CUALQUIER VARIABLE A NIVEL DE SISTEMA USAMOS "System.getProperty" EN ESTE CASO QUEREMOS LEER
 		// ESTAMOS USANDO UN OPERADOR TERNARIO DE JAVA, SI LA EL BROWSER DESDE LA CONSOLA DE MAVEN NO ES NULL USAMOS ESE O SINO USAMOS EL DEL "GlobalProperties"
 		// OBTIENE EL VALOR DE LA PROPIEDAD "browser" Y LA GUARDA EN UNA VARIABLE PARA DECIDIR QUE BROWSER USAR
@@ -60,8 +69,21 @@ public class BaseTest {
 				chromeOptions.addArguments("--window-size=1440,900"); // 
 			}
 			
+			// CREAR MAPA DE PREFERENCIAS
+			Map<String, Object> prefs = new HashMap<>();
+			
+			// ESTABLECER RUTA DE DESCARGA
+			prefs.put("download.default_directory", downloadPath);
+			prefs.put("download.prompt_for_download", false); // DESACTIVAR PREGUNTA DE CONFIRMACION
+			prefs.put("download.directory_upgrade", true); // EVITAR QUE CHROME TENGA PROBLEMAS AL ACTUALIZAR LA CARPETA
+			prefs.put("plugins.always_open_pdf_externally", true); // FORZAR DESCARGA DE PDF EN LUGAR DE ABRIR EN EL VISOR
+			
+			// APLICAR PREFERENCIAS
+			chromeOptions.setExperimentalOption("prefs", prefs);
+			
 			driver = new ChromeDriver(chromeOptions); // SE LE PASA ARGUMENTO DE LA CONFIGURACIÓN AL MOMENTO DE DEFINIR EL DRIVER
 													  // EN CASO QUE NO SE CUMPLA LA CONDICIÓN ANTERIOR, LA VARIABLE "chromeOptions" ESTARÁ VACIA Y SE EJECUTARÁ DE FORMA NORMAL SIN MODO HEADLESS
+			
 		}
 		
 		else if (browserName.equalsIgnoreCase("firefox")) {
@@ -90,14 +112,36 @@ public class BaseTest {
 	/*AL COLOCAR LA ANOTACIÓN "@BeforeMethod", ESTE MÉTODO SE EJECUTARÁ ANTES DE CUALQUIER MÉTODO @Test POR LO QUE 
 	 * NO ES NECESARIO INVOCAR ESTE MÉTODO DESDE NUESTRO @Test PORQUE YA SE EEJECUTARÁ AUTOMÁTICAMENTE*/
 	
-	@BeforeMethod(alwaysRun = true)
 	public LandingPage launchApplication() throws IOException {
-		// METODO PARA INICIALIZAR EL DRIVER E INVOCAR EL "goTo" QUE NAVEGA A LA URL
-		driver = initializeDriver();
+		// METODO PARA INVOCAR EL "goTo" QUE NAVEGA A LA URL
 		landingPage = new LandingPage(driver); // CREACIÓN DEL OBJETO DE LA CLASE LandingPage PARA QUE PUEDA INVOCAR EL MÉTODO "goTo"
 		landingPage.goTo();
 		return landingPage; // COMO ESTAMOS EVITANDO CREAR OBJETOS DE CLASES EN NUESTROS TEST, NECESITAMOS CREARLOS EN LOS MÉTODOS, PERO
 							// PARA USARLO EN EL TEST NO BASTA CON HACER LA CLASE "BaseTest" PADRE DEL "SubmitOrderTest" SINO QUE NECESITAMOS RETORNAR ESE OBJETO PARA USARLO ALLÁ
+	}
+	
+	public UploadPage openExcelPage() {
+		uploadPage = new UploadPage(driver); // CREA EL OBJETO UploadPage
+		uploadPage.goToExcelPage(); // LLAMA AL MÉTODO DE NAVEGACIÓN
+		return uploadPage;
+	}
+	
+	public void prepareExcelTest() throws IOException {
+		driver = initializeDriver(); // INICIALIZA EL DRIVER
+		uploadPage = openExcelPage(); // CREA UPLOADPAGE Y NAVEGA
+		excelUtils = new ExcelUtils(); // INICIALIZA EXCELUTILS
+	}
+	
+	public void prepareEcommerceTest() throws IOException {
+		driver = initializeDriver(); // INICIALIZA EL DRIVER
+		landingPage = new LandingPage(driver); // CREA OBJETO DE PÁGINA
+	}
+	
+	@BeforeMethod(alwaysRun = true)
+	public WebDriver setUpDriver() throws IOException {
+		// METODO PARA INICIALIZAR EL DRIVER ANTES DE CADA TEST
+		driver = initializeDriver();
+		return driver;			
 	}
 	
 	@AfterMethod(alwaysRun = true)

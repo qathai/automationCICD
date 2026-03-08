@@ -11,6 +11,7 @@ import org.testng.annotations.Test;
 import thaicompany.pageobjects.CartPage;
 import thaicompany.pageobjects.CheckOutPage;
 import thaicompany.pageobjects.ConfirmationPage;
+import thaicompany.pageobjects.LandingPage;
 import thaicompany.pageobjects.OrderPage;
 import thaicompany.pageobjects.ProductCatalogue;
 import thaicompany.testcomponents.BaseTest;
@@ -26,6 +27,7 @@ public class SubmitOrderTest extends BaseTest{
 		// INICIAMOS SESIÓN USANDO EL MÉTODO "loginApplication" DEL OBJETO "landingPage"
 		// ESTE MÉTODO RETORNA EL OBJETO "ProductCatalogue" PARA PODER CONTINUAR CON EL FLUJO, 
 		// POR ESO HACEMOS LA SIGNACIÓN, ASI NO TENEMOS QUE CREAR UN OBJETO DE LA CLASE AQUI
+		LandingPage landingPage = launchApplication();
 		ProductCatalogue productCatalogue = landingPage.loginApplication(data.get("email"), data.get("password"));
 		
 		// AGREGAMOS AL CARRITO EL PRODUCTO ESPECÍFICO QUE QUEREMOS COMPRAR
@@ -60,8 +62,9 @@ public class SubmitOrderTest extends BaseTest{
 	}
 	
 	@Test (dependsOnMethods = {"submitOrder"})
-	public void OrderHistoryTest() {
+	public void OrderHistoryTest() throws IOException {
 		
+		LandingPage landingPage = launchApplication();
 		ProductCatalogue productCatalogue = landingPage.loginApplication("donpaquito@gmail.com", "Paquito1.");
 		OrderPage orderPage = productCatalogue.goToOrders();
 		boolean productMatch = orderPage.VerifyOrderDisplay(productName);

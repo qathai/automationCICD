@@ -12,7 +12,7 @@ import thaicompany.abstractcomponents.AbstractComponent;
 public class LandingPage extends AbstractComponent {
 	WebDriver driver;
 
-	// CONSTRUCTOR PARA PODER USAR EL driver QUE FUE DECLARADO EN "SubmitOrderTest"
+	// CONSTRUCTOR PARA PODER USAR EL driver
 	public LandingPage(WebDriver driver) {
 		// INICIALIZACIÓN
 		super(driver); // NECESITO ENTENDER ESTO MEJOR, CREO QUE SE AGREGA "super(driver)" PORQUE COMO
